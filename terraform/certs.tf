@@ -23,13 +23,13 @@ resource "tls_self_signed_cert" "ca" {
 }
 
 resource "tls_private_key" "default" {
-  for_each = local.hosts
+  for_each  = local.hosts
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 resource "tls_cert_request" "default" {
-  for_each = local.hosts
+  for_each        = local.hosts
   private_key_pem = tls_private_key.default[each.key].private_key_pem
 
   dns_names = [
@@ -45,13 +45,19 @@ resource "tls_cert_request" "default" {
 # For testing generate certs with differing expriations
 resource "tls_locally_signed_cert" "default" {
   for_each = local.hosts
-  
+
   cert_request_pem   = tls_cert_request.default[each.key].cert_request_pem
   ca_private_key_pem = tls_private_key.ca.private_key_pem
   ca_cert_pem        = tls_self_signed_cert.ca.cert_pem
 
   # Using the network address to generate predictable results <10 expired <168 expiring everything else okay
-  validity_period_hours = each.value.validity < 50 ? 0 : each.value.validity < 168 ? each.value.validity : 365 * 24
+  validity_period_hours = (
+    each.value.validity <= 50 ? 0 : (
+      each.value.validity <= 100 ? 6 * each.value.validity : (
+        each.value.validity > 200 ? (365 * 24) - each.value.validity : 365 * 24
+      )
+    )
+  )
 
   allowed_uses = [
     "key_encipherment",

@@ -111,20 +111,20 @@ main(){
         ssl_check_expired "$si" "$ssl_cert" &&
         ssl_check_expiring "$si" "$ssl_cert" &&
         ssl_check_reissue "$si" "$ssl_cert" &&
-        send_info "${si%%:*} is ok"
+        send_info "INFO:  ${si%%:*} is ok"
     done
 }
 
 ssl_needs_reissue(){
     local si=$1
-    local msg="INFO: ${si%%:*} ssl certificate has not been reissued in the last 7 days"
+    local msg="WARN:  ${si%%:*} ssl certificate has not been reissued in the last 7 days"
     send_stats "outdated" "${si}"
-    send_info "${msg}"
+    send_warn "${msg}"
 }
 
 ssl_is_expiring(){
     local si=$1
-    local msg="WARN: ${si%%:*} ssl certificate is expiring with the next 30 days"
+    local msg="WARN:  ${si%%:*} ssl certificate is expiring with the next 30 days"
     send_stats "expiring" "${si}"
     send_warn "${msg}"
 }
