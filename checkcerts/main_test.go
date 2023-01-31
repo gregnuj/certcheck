@@ -38,7 +38,7 @@ func TestGetIpsJson(t *testing.T) {
 	ips, err := getIpsJSON(file.Name())
 
 	ips.getList()
-	
+
 	require.NoError(t, err)
 	require.Equal(t, ips, testIps)
 }

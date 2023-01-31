@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"time"
 	"github.com/ashwanthkumar/slack-go-webhook"
 	"github.com/cactus/go-statsd-client/v5/statsd"
+	"time"
 )
 
 // Get midnight today.
@@ -17,26 +17,26 @@ func midnight() time.Time {
 func lastThursday() time.Time {
 	today := midnight()
 	weekday := today.Weekday()
-	offset := int(weekday + time.Wednesday) * -1
+	offset := int(weekday+time.Wednesday) * -1
 	return today.AddDate(0, 0, offset)
 }
 
-func onReissue(h *Host){
+func onReissue(h *Host) {
 	sendStatsd(fmt.Sprintf("certs.%s.outdated", h.getName()))
-    msg := fmt.Sprintf("%s ssl certificate has not been reissued in the last 7 days", h.getName())
+	msg := fmt.Sprintf("%s ssl certificate has not been reissued in the last 7 days", h.getName())
 	logger.Error(msg)
 	postSlack(msg)
 }
 
-func onExpiring(h *Host){
-    msg := fmt.Sprintf("%s ssl certificate is expiring with the next 30 days", h.getName())
+func onExpiring(h *Host) {
+	msg := fmt.Sprintf("%s ssl certificate is expiring with the next 30 days", h.getName())
 	logger.Error(msg)
 	postSlack(msg)
 	sendStatsd(fmt.Sprintf("certs.%s.expiring", h.getName()))
 }
 
-func onExpired(h *Host){
-    msg := fmt.Sprintf("%s ssl certificate has expired", h.getName())
+func onExpired(h *Host) {
+	msg := fmt.Sprintf("%s ssl certificate has expired", h.getName())
 	logger.Error(msg)
 	postSlack(msg)
 	sendStatsd(fmt.Sprintf("certs.%s.expired", h.getName()))
@@ -44,10 +44,10 @@ func onExpired(h *Host){
 
 func postSlack(msg string) {
 	if webHookUrl != "" {
-		payload := slack.Payload {
-		Text: msg,
-		Username: "robot",
-		Channel: "#general",
+		payload := slack.Payload{
+			Text:     msg,
+			Username: "robot",
+			Channel:  "#general",
 		}
 		err := slack.Send(webHookUrl, "", payload)
 		if err != nil {

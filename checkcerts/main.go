@@ -6,22 +6,22 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"errors"
-	"time"
 	"fmt"
 	"os"
+	"time"
 
-	"github.com/spf13/cobra"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 )
 
 var (
-	logger *logrus.Logger
-	webHookUrl string
+	logger       *logrus.Logger
+	webHookUrl   string
 	statsdServer string
 )
 
 const (
-	flagIpsJSONFile = "ips"
+	flagIpsJSONFile  = "ips"
 	flagSlackWebhook = "slack"
 	flagStatsdServer = "statsd"
 )
@@ -113,9 +113,9 @@ func processCert(h *Host, cert *x509.Certificate) error {
 	switch {
 	case cert.NotAfter.Before(time.Now()):
 		onExpired(h)
-	case cert.NotAfter.Before(time.Now().AddDate(0,0,30)):
+	case cert.NotAfter.Before(time.Now().AddDate(0, 0, 30)):
 		onExpiring(h)
-	case cert.NotAfter.Before(lastThursday().AddDate(1,0,0)):
+	case cert.NotAfter.Before(lastThursday().AddDate(1, 0, 0)):
 		onReissue(h)
 	default:
 		logger.Infof("%s: cert is okay\n", h.getName())
@@ -125,9 +125,9 @@ func processCert(h *Host, cert *x509.Certificate) error {
 
 // Retrieve certificate(s) for specific ip/port combo.
 func getCerts(ipPort string) (certs []*x509.Certificate, er error) {
-    conf := &tls.Config{
-        InsecureSkipVerify: true,
-    }
+	conf := &tls.Config{
+		InsecureSkipVerify: true,
+	}
 
 	conn, err := tls.Dial("tcp", ipPort, conf)
 	if err != nil {
