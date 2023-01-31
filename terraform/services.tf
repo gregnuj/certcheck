@@ -3,13 +3,13 @@ resource "docker_image" "image" {
   for_each = toset(local.services)
   name     = each.key
   build {
-    context = "${path.module}/../docker/services"
+    context = "${path.module}/../services"
     tag     = ["local/${each.key}:latest"]
   }
 
   # Trigger rebuild if files in services directory change
   triggers = {
-    dir_sha1 = sha1(join("", [for f in fileset(path.module, "../docker/services/*") : filesha1(f)]))
+    dir_sha1 = sha1(join("", [for f in fileset(path.module, "../services/*") : filesha1(f)]))
   }
 }
 

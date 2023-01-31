@@ -1,0 +1,3 @@
+# run checkcerts.sh every minute
+0-58/2  *    * * *   root /usr/local/bin/checkcerts.go -i "${IPSJSON}" 1>/proc/1/fd/1 2>/proc/1/fd/2
+1-59/2  *    * * *   root /usr/local/bin/checkcerts.sh 1>/proc/1/fd/1 2>/proc/1/fd/2

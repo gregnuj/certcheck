@@ -48,13 +48,14 @@ resource "docker_network" "network" {
 resource "docker_image" "bastion" {
   name = "bastion"
   build {
-    context = "${path.module}/../docker/bastion"
+    context = "${path.module}/.."
     tag     = ["local/bastion:latest"]
   }
 
   # Trigger rebuild if files in bastion directory change
   triggers = {
-    dir_sha1 = sha1(join("", [for f in fileset(path.module, "../docker/bastion/*") : filesha1(f)]))
+    dir_sha1 = sha1(join("", [for f in fileset(path.module, "../checkcerts/*") : filesha1(f)]))
+    scripts_sha1 = sha1(join("", [for f in fileset(path.module, "../scripts/*") : filesha1(f)]))
   }
 }
 
