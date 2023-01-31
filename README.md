@@ -28,13 +28,14 @@ The bastion host is set up to run cron as PID 1 which alternates the execution o
 
 The script can be observed via the log file of the bastion container.  Additonally the bastion will update the statsd server with the status and send a notification via a slack webhook url.
 
-### Example Bastion Output:
+### Example Bastion Output
 
 ![Image](./assets/output.png)
 
 ## Tear Down
 
 To remove all containers and asssociated configuration
-```
+
+```bash
 terraform destroy
 ```
