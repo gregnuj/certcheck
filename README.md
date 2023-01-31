@@ -19,7 +19,7 @@ This will create a mock environment using docker containers with 1 bastion host,
 - (100-200) web servers with ip addresses ending in a number between 100 and 200 will be assigned 24 * 365 hours as the validity period simulating a certificate that has no issues.
 - (201-254) web servers with ip addresses ending in a number between 201 and 254 will be assigend 24 * 365 - (201-254) hours simulating a certificte that missed a weekly renewal.
 
-The bastion host is set up to run cron as PID 1 which executes the checkcerts.sh bash script found in the docker/bastion folder once per minute.  The script will retrieve the ssl certificate from each of the aforementioned web servers and check its end date against these criteria:
+The bastion host is set up to run cron as PID 1 which alternates the execution of the checkcerts go binary (on even minutes) and the checkcerts.sh bash script (on odd minutes). The checkcerts.sh bash script can be found in the ./scripts the go code is in the ./checkcerts/ directory.  Each script functions similarly and produces the same results. Each retrieves the ssl certificate from each of the aforementioned web servers and check the certtificates' end date against these criteria:
 
 1. Was the script able to retrieve the certificate successfully?
 2. Is the certificate expired?
@@ -29,6 +29,7 @@ The bastion host is set up to run cron as PID 1 which executes the checkcerts.sh
 The script can be observed via the log file of the bastion container.  Additonally the bastion will update the statsd server with the status and send a notification via a slack webhook url.
 
 ### Example Bastion Output:
+
 ![Image](./assets/output.png)
 
 ## Tear Down
